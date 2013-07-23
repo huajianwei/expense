@@ -1,0 +1,43 @@
+$def with (fields, action, msg)
+$:render.header('新增' if action == '/insert' else '编辑')
+
+$if msg:
+    <h1>$msg</h1>
+
+<form action="$action" method="post">
+    <table>
+        $for key, disp, ro, sel, value in fields:
+            $if ro:
+                $continue
+            $if key == 'time' and value == '':
+                $ value = time.strftime("%Y-%m-%d %H:%M:%S")
+            <tr>
+                <td>$disp</td>
+                <td>
+                    $if sel:
+                        <select name="$key">
+                            $for i, v in enumerate(sel):
+                                $ selected = ' selected' if i == value else ''
+                                <option value="$i" $selected>$v</option>
+                        </select>
+                    $else:
+                        <input type="text" name="$key" value="$value"/>
+                </td>
+            </tr>
+        <tr>
+            <td></td>
+            <td>
+                <input type="submit" value="提交"/>
+                <input type="reset" value="重置"/>
+            </td>
+        </tr>
+        <tr>
+            <td></td>
+            <td>
+                <input type="button" value="新增" onclick="location='/insert'" />
+            </td>
+        </tr>
+    </table>
+</form>
+
+$:render.footer()

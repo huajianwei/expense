@@ -1,0 +1,52 @@
+$def with (rows, page, pages, fields, remain)
+$:render.header('列表')
+
+<script>
+    function do_remove(gid)
+    {
+        if (!window.confirm('确定删除?'))
+            return;
+        location = '/remove/' + gid + '/' + (new Date()).valueOf()
+    }
+</script>
+
+<style>
+    #listform td{text-align:center;}
+</style>
+
+<div style="margin:10px;">
+    <input style="margin:5px;" type="button" value="增" onclick="location='/insert';"/>
+    当前账户余额: $remain (元)
+</div>
+
+<table id="listform" cellpadding="5" cellspacing="0" border="1">
+    <tr>
+        $for i in fields:
+            <td>$i[1]</td>
+        <td>操作</td>
+    </tr>
+    $for row in rows:
+        <tr>
+            $for key, dis, ro, sel, val in fields:
+                $ out = row[key] if not sel else sel[int(row[key])]
+                <td>$out</td>
+            <td>
+                <input type="button" value="改" onclick="location='/edit/$row['gid']';"/>
+                <input type="button" value="删" onclick="do_remove($row['gid'])"/>
+            </td>
+        </tr>
+</table>
+<div style="margin:10px;">
+<input style="margin:5px;" type="button" value="增" onclick="location='/insert';"/>
+<a href="/list?page=1">首页</a>
+$ begin = max(page - 2, 1)
+$ end   = min(begin + 5, pages)
+$for p in range(begin, end + 1):
+    $if p == page:
+        <strong>$page</strong>
+    $else:
+        <a href="/list?page=$p">$p</a>
+<a href="/list?page=$pages">末页</a>
+</div>
+
+$:render.footer()
